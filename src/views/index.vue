@@ -73,7 +73,7 @@ export default {
 }
 .music-content {
   width: 100%;
-  height: calc(100% - 80px - 60px);
+  height: calc(100% - 60px);
   background: rgb(#000, 0.6);
   color: #fff;
   .music-list {
@@ -109,7 +109,7 @@ export default {
       .music-item-play-icon {
         width: 50px;
         height: 50px;
-        background-image: url(../assets/imgs/player/pause.png);
+        background-image: url(~@/assets/imgs/player/pause.png);
         background-size: contain;
       }
       .music-item-author {

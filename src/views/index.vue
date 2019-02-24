@@ -5,6 +5,10 @@
       <div class="music-login-button">登录</div>
     </header>
     <div class="music-content">
+      <div class="music-tab">
+        <div>每日推荐</div>
+        <div>热歌榜</div>
+      </div>
       <div class="music-list">
         <div class="music-list-header">
           <span class="music-header-name">歌名</span>
@@ -74,15 +78,35 @@ export default {
 .music-content {
   width: 100%;
   height: calc(100% - 60px);
-  background: rgb(#000, 0.6);
-  color: #fff;
+  color: #000;
+  background: rgb(#ccc, 0.6);
+  .music-tab {
+    display: flex;
+    height: 40px;
+    align-items: center;
+    background: #fff;
+    padding-bottom: 0px;
+    font-size: 18px;
+    div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: #000;
+      width: 50%;
+    }
+    div:first-child {
+      color: #d33a31;
+      border-bottom: 2px solid #d33a31;
+    }
+  }
   .music-list {
     padding: 0 12px;
     .music-list-header {
       display: flex;
       height: 50px;
       align-items: center;
-      border-bottom: 1px solid hsla(0, 0%, 100%, 0.2);
+      border-bottom: 1px solid hsla(0, 0%, 100%, 0.4);
       .music-header-name {
         flex: 1;
         margin-left: 40px;
@@ -98,7 +122,7 @@ export default {
       height: 50px;
       line-height: 50px;
       overflow: hidden;
-      border-bottom: 1px solid hsla(0, 0%, 100%, 0.2);
+      border-bottom: 1px solid hsla(0, 0%, 100%, 0.4);
       .music-item-num {
         width: 30px;
         margin-left: 10px;

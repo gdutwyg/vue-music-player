@@ -37,17 +37,20 @@
 <script>
 // @ is an alias to /src
 // import HelloWorld from '@/components/HelloWorld.vue'
-
+import request from '@/request'
 export default {
   name: 'index',
   components: {},
-  data() {
+  data () {
     return {}
   },
   methods: {
-    turnDetail() {
+    turnDetail () {
       this.$router.push('detail')
     }
+  },
+  created () {
+    const data = request.sendReq('/api/search?keywords=海阔天空')
   }
 }
 </script>

@@ -6,8 +6,8 @@
     </header>
     <div class="music-content">
       <div class="music-tab">
-        <div>每日推荐</div>
-        <div>热歌榜</div>
+        <div @click="toggleTab()">每日推荐</div>
+        <div @click="toggleTab()">热歌榜</div>
       </div>
       <div class="music-list">
         <div class="music-list-header">
@@ -15,22 +15,20 @@
           <span class="music-header-author">歌手</span>
         </div>
         <ul class="music-list-content">
-          <li class="music-list-item" @click="turnDetail">
-            <span class="music-item-num">1</span>
-            <span class="music-item-name">xxx</span>
-            <!-- <span class="music-item-play-icon"></span> -->
-            <span class="music-item-author">xxx/abc</span>
-          </li>
-          <li class="music-list-item">
-            <span class="music-item-num">1</span>
-            <span class="music-item-name">xxx</span>
-            <!-- <span class="music-item-play-icon"></span> -->
-            <span class="music-item-author">xxx/abc</span>
+          <li
+            class="music-list-item"
+            v-for="(item, index) in playlist"
+            :key="index"
+            @click="turnDetail"
+          >
+            <span class="music-item-num">{{index + 1}}</span>
+            <span class="music-item-name">{{item.name}}</span>
+            <span class="music-item-author">{{item.singer}}</span>
           </li>
         </ul>
       </div>
     </div>
-    <div class="music-footer"></div>
+    <!-- <div class="music-footer"></div> -->
   </div>
 </template>
 
@@ -38,19 +36,29 @@
 // @ is an alias to /src
 // import HelloWorld from '@/components/HelloWorld.vue'
 import request from '@/request'
+import utils from '@/utils'
 export default {
   name: 'index',
   components: {},
   data () {
-    return {}
+    return {
+      playlist: []
+    }
   },
   methods: {
+    toggleTab () {
+
+    },
     turnDetail () {
       this.$router.push('detail')
     }
   },
-  created () {
-    const data = request.sendReq('/api/search?keywords=海阔天空')
+  async created () {
+    const data = await request.sendReq('/api/top/List', {
+      idx: 1
+    })
+    this.playlist = utils.formatPlayList(data.playlist.tracks)
+    console.log(utils.formatPlayList(data.playlist.tracks))
   }
 }
 </script>
@@ -104,8 +112,12 @@ export default {
     }
   }
   .music-list {
+    position: relative;
+    width: 100%;
+    height: 100%;
     padding: 0 12px;
     .music-list-header {
+      top: 0;
       display: flex;
       height: 50px;
       align-items: center;
@@ -119,28 +131,34 @@ export default {
         width: 100px;
       }
     }
-    .music-list-item {
-      display: flex;
-      width: 100%;
-      height: 50px;
-      line-height: 50px;
-      overflow: hidden;
-      border-bottom: 1px solid hsla(0, 0%, 100%, 0.4);
-      .music-item-num {
-        width: 30px;
-        margin-left: 10px;
-      }
-      .music-item-name {
-        flex: 1;
-      }
-      .music-item-play-icon {
-        width: 50px;
+    .music-list-content {
+      height: calc(100% - 50px);
+      overflow: auto;
+      .music-list-item {
+        display: flex;
+        width: 100%;
         height: 50px;
-        background-image: url(~@/assets/imgs/player/pause.png);
-        background-size: contain;
-      }
-      .music-item-author {
-        width: 100px;
+        line-height: 50px;
+        overflow: hidden;
+        border-bottom: 1px solid hsla(0, 0%, 100%, 0.4);
+        font-size: 14px;
+        color: #000;
+        .music-item-num {
+          width: 30px;
+          margin-left: 10px;
+        }
+        .music-item-name {
+          flex: 1;
+        }
+        .music-item-play-icon {
+          width: 50px;
+          height: 50px;
+          background-image: url(~@/assets/imgs/player/pause.png);
+          background-size: contain;
+        }
+        .music-item-author {
+          width: 100px;
+        }
       }
     }
   }

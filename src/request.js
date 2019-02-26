@@ -2,9 +2,11 @@ import axios from 'axios'
 import Vue from 'vue'
 import router from './router'
 class Request {
-  sendReq (url) {
+  sendReq (url, params) {
     return axios
-      .get(url)
+      .get(url, {
+        params
+      })
       .then(res => {
         if (res.status === 200) return res.data
         else return {}

@@ -41,6 +41,7 @@
   </div>
 </template>
 <script>
+import { mapState } from 'vuex'
 export default {
   name: 'detail',
   components: {},
@@ -51,6 +52,14 @@ export default {
     goBack() {
       this.$router.push('/')
     }
+  },
+  computed: {
+    ...mapState({
+      count: state => state.count
+    })
+  },
+  mounted() {
+    console.log(this.count)
   }
 }
 </script>

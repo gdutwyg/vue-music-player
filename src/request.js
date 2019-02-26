@@ -1,8 +1,7 @@
 import axios from 'axios'
 import Vue from 'vue'
-import router from './router'
 class Request {
-  sendReq (url, params) {
+  sendReq(url, params) {
     return axios
       .get(url, {
         params

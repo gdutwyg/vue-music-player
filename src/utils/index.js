@@ -1,5 +1,5 @@
 class Utils {
-  formatPlayList (list) {
+  formatPlayList(list) {
     if (!list.length) return []
     return list.map(item => {
       const singer = this.formatSinger(item.ar)
@@ -14,7 +14,7 @@ class Utils {
       }
     })
   }
-  formatSinger (ar) {
+  formatSinger(ar) {
     if (!ar.length) return '佚名'
     return ar.map(item => item.name).join('/')
   }

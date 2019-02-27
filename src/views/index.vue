@@ -21,7 +21,7 @@
         <ul class="music-list-content">
           <li
             class="music-list-item"
-            v-for="(item, i) in playlist"
+            v-for="(item, i) in playList"
             :key="i"
             @click="turnDetail(item, i)"
           >
@@ -60,7 +60,7 @@ export default {
           value: 'recommend'
         }
       ],
-      playlist: []
+      playList: []
     }
   },
   computed: {
@@ -88,8 +88,8 @@ export default {
     const data = await request.sendReq('/api/top/List', {
       idx: 1
     })
-    this.playlist = utils.formatPlayList(data.playlist.tracks)
-    this.setPlayList(this.playlist)
+    this.playList = utils.formatPlayList(data.playlist.tracks)
+    this.setPlayList(this.playList)
   }
 }
 </script>

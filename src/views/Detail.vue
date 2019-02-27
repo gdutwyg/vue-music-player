@@ -1,5 +1,5 @@
 <template>
-  <div class="music-detail">
+  <div :class="{'music-detail': true, 'pause': !playing}">
     <div class="detail-header">
       <span class="detail-header-back" @click="goBack"></span>
       <div class="detail-header-info">
@@ -25,12 +25,12 @@
             <div class="music-progress-dot"></div>
           </div>
         </div>
-        <span class="music-all-time">03:56</span>
+        <span class="music-all-time">{{curMusic.musicTime}}</span>
       </div>
       <div class="music-controls">
         <div class="btn btn-mode"></div>
         <div class="btn btn-prev" @click="prevMusic"></div>
-        <div class="btn btn-play" @click="palyMusic"></div>
+        <div class="btn btn-play" @click="togglePlaying"></div>
         <div class="btn btn-next" @click="nextMusic"></div>
         <div class="btn btn-list"></div>
       </div>
@@ -42,49 +42,65 @@ import { mapState, mapMutations } from 'vuex'
 export default {
   name: 'detail',
   components: {},
-  data () {
+  data() {
     return {}
   },
   computed: {
     ...mapState({
       audioEle: state => state.audioEle,
       playList: state => state.playList,
-      curIndex: state => state.curIndex
+      curIndex: state => state.curIndex,
+      playing: state => state.playing
     }),
-    curMusic () {
+    curMusic() {
       return this.playList[this.curIndex]
     }
   },
   watch: {
+    curIndex() {
+      this.playMusic()
+    },
+    playing(newVal) {
+      newVal ? this.audioEle.play() : this.audioEle.pause()
+    }
   },
 
   methods: {
     ...mapMutations({
-      setCurIndex: 'setCurIndex'
+      setCurIndex: 'setCurIndex',
+      setPlaying: 'setPlaying'
     }),
-    goBack () {
+    goBack() {
       this.$router.push('/')
     },
+    // 暂停/播放
+    togglePlaying() {
+      this.setPlaying(!this.playing)
+    },
     // 播放音乐
-    palyMusic () {
+    playMusic() {
       this.audioEle.src = this.playList[this.curIndex].url
       this.audioEle.play()
-      this.audioEle.onended = () => {
-        console.log('end')
-        if (this.curIndex + 1 === this.playlist.length) this.setCurIndex(0)
-        this.audioEle.src = this.playlist[this.curIndex + 1].url
-        this.audioEle.play()
+    },
+    prevMusic() {
+      if (this.curIndex === 0) {
+        this.setCurIndex(this.playList.length - 1)
+        return
       }
+      this.setCurIndex(this.curIndex - 1)
     },
-    prevMusic () {
-
-    },
-    nextMusic () {
-
+    nextMusic() {
+      if (this.curIndex === this.playList.length - 1) {
+        this.setCurIndex(0)
+        return
+      }
+      this.setCurIndex(this.curIndex + 1)
     }
   },
-  mounted () {
-    this.palyMusic()
+  mounted() {
+    this.togglePlaying()
+    this.playMusic()
+    this.audioEle.onended = this.nextMusic
   }
 }
 </script>
@@ -135,9 +151,6 @@ export default {
         transform-origin: 16px 16px;
         transition: all 0.3s;
         transform: translate(-20px, 0);
-        &.pause {
-          transform: translate(-20px, 0) rotate(-30deg);
-        }
       }
       .player-cover-box {
         position: relative;
@@ -192,7 +205,7 @@ export default {
           width: 0;
           height: 2px;
           background: rgb(229, 71, 60);
-          width: 42.6661px;
+          width: 0px;
           .music-progress-dot {
             position: absolute;
             top: 50%;
@@ -203,7 +216,7 @@ export default {
             transform: translate(0, -50%);
             background-color: #fff;
             &:after {
-              content: "";
+              content: '';
               position: absolute;
               top: 50%;
               left: 50%;
@@ -219,6 +232,7 @@ export default {
     }
     .music-controls {
       display: flex;
+      justify-content: space-between;
       .btn {
         width: 80px;
         height: 80px;
@@ -238,6 +252,21 @@ export default {
       }
       .btn-list {
         background-image: url(~@/assets/imgs/player/list.png);
+      }
+    }
+  }
+  &.pause {
+    .player-cd {
+      .player-needle {
+        transform: translate(-20px, 0) rotate(-30deg);
+      }
+      .player-cover-box {
+        animation-play-state: paused;
+      }
+    }
+    .music-controls {
+      .btn-play {
+        background-image: url(~@/assets/imgs/player/pause.png);
       }
     }
   }

@@ -8,7 +8,7 @@
 <script>
 import { mapMutations } from 'vuex'
 export default {
-  data () {
+  data() {
     return {}
   },
   methods: {
@@ -16,7 +16,7 @@ export default {
       setAudioEle: 'setAudioEle'
     })
   },
-  mounted () {
+  mounted() {
     this.$nextTick(() => {
       this.setAudioEle(this.$refs.player)
     })
@@ -33,7 +33,7 @@ html {
   overflow: hidden;
 }
 #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

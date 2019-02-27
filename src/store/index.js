@@ -12,18 +12,21 @@ export default new Vuex.Store({
   },
   getters,
   mutations: {
-    setAudioEle (state, audioEle) {
+    setAudioEle(state, audioEle) {
       state.audioEle = audioEle
     },
-    setPlayList (state, playList) {
+    setPlayList(state, playList) {
       state.playList = playList
     },
-    setCurIndex (state, curIndex) {
+    setCurIndex(state, curIndex) {
       state.curIndex = curIndex
+    },
+    setPlaying(state, playing) {
+      state.playing = playing
     }
   },
   actions: {
-    setAudioEle (context, audioEle) {
+    setAudioEle(context, audioEle) {
       context.commit('setAudioEle', audioEle)
     }
   }

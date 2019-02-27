@@ -21,11 +21,11 @@
         <ul class="music-list-content">
           <li
             class="music-list-item"
-            v-for="(item, index) in playlist"
-            :key="index"
+            v-for="(item, i) in playlist"
+            :key="i"
             @click="turnDetail(item, i)"
           >
-            <span class="music-item-num">{{index + 1}}</span>
+            <span class="music-item-num">{{i + 1}}</span>
             <span class="music-item-name">{{item.name}}</span>
             <span class="music-item-author">{{item.singer}}</span>
           </li>
@@ -33,21 +33,21 @@
       </div>
       <div v-else class="warning">敬请期待。。。</div>
     </div>
-    <audio ref="audioEle" src="https://music.163.com/song/media/outer/url?id=1313354324.mp3"></audio>
     <!-- <div class="music-footer"></div> -->
+    <div class="music-bg"></div>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 // import HelloWorld from '@/components/HelloWorld.vue'
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import request from '@/request'
 import utils from '@/utils'
 export default {
   name: 'index',
   components: {},
-  data() {
+  data () {
     return {
       currentTab: 'hot',
       tabList: [
@@ -69,35 +69,32 @@ export default {
     })
   },
   methods: {
-    toggleTab(tab) {
+    ...mapMutations({
+      setPlayList: 'setPlayList',
+      setCurIndex: 'setCurIndex'
+    }),
+    toggleTab (tab) {
       this.currentTab = tab
     },
-    turnDetail(item, i) {
-      this.audioEle.src = item.url
-      this.audioEle.play()
-      this.audioEle.onended = () => {
-        if (i + 1 === this.playlist.length) i = 0
-        this.audioEle.src = this.playlist[i + 1]
-        this.audioEle.play()
-      }
-      // this.$router.push('detail')
+    turnDetail (item, i) {
+      // 点击歌曲 设置当前音乐下标
+      this.setCurIndex(i)
+      this.$router.push('detail')
     }
   },
-  mounted() {
-    this.$nextTick(() => {
-      // this.$refs.audioEle.play()
-    })
+  mounted () {
   },
-  async created() {
+  async created () {
     const data = await request.sendReq('/api/top/List', {
       idx: 1
     })
     this.playlist = utils.formatPlayList(data.playlist.tracks)
-    console.log(utils.formatPlayList(data.playlist.tracks))
+    this.setPlayList(this.playlist)
   }
 }
 </script>
 <style lang="less">
+@import "~@/assets/less/mixin.less";
 .music-box {
   width: 100%;
   height: 100%;
@@ -124,7 +121,7 @@ export default {
 .music-content {
   width: 100%;
   height: calc(100% - 60px);
-  color: #000;
+  color: rgba(0, 0, 0, 0.6);
   background: rgb(#ccc, 0.6);
   .music-tab {
     display: flex;
@@ -151,12 +148,14 @@ export default {
     width: 100%;
     height: 100%;
     padding: 0 12px;
+    box-sizing: border-box;
     .music-list-header {
       top: 0;
       display: flex;
       height: 50px;
       align-items: center;
       border-bottom: 1px solid hsla(0, 0%, 100%, 0.4);
+      color: rgba(0, 0, 0, 0.9);
       .music-header-name {
         flex: 1;
         margin-left: 40px;
@@ -167,6 +166,7 @@ export default {
       }
     }
     .music-list-content {
+      width: 100%;
       height: calc(100% - 50px);
       overflow: auto;
       .music-list-item {
@@ -177,7 +177,6 @@ export default {
         overflow: hidden;
         border-bottom: 1px solid hsla(0, 0%, 100%, 0.4);
         font-size: 14px;
-        color: #000;
         .music-item-num {
           width: 30px;
           margin-left: 10px;
@@ -192,7 +191,8 @@ export default {
           background-size: contain;
         }
         .music-item-author {
-          width: 100px;
+          width: 120px;
+          .nowrap();
         }
       }
     }
@@ -203,5 +203,21 @@ export default {
     top: 30%;
     text-align: center;
   }
+}
+.music-bg {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: -2;
+  background-image: url(http://cdn.mtnhao.com/music/bg.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 50%;
+  filter: blur(4px);
+  opacity: 0.8;
+  transform: translateZ(0);
+  transition: all 0.8s;
 }
 </style>

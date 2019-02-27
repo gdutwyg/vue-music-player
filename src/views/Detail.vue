@@ -3,8 +3,8 @@
     <div class="detail-header">
       <span class="detail-header-back" @click="goBack"></span>
       <div class="detail-header-info">
-        <h1>All My Happiness</h1>
-        <span>Kim Taylor</span>
+        <h1>{{curMusic.name}}</h1>
+        <span>{{curMusic.singer}}</span>
       </div>
     </div>
     <div class="detail-cover">
@@ -12,10 +12,7 @@
         <div class="player-needle"></div>
         <div class="player-cover-box">
           <div class="player-cover-bg"></div>
-          <img
-            src="http://p1.music.126.net/D_hiKMwrdQlqD36LoKLO2w==/109951163187408030.jpg?param=200y200"
-            alt
-          >
+          <img :src="curMusic.picUrl">
         </div>
       </div>
     </div>
@@ -32,34 +29,62 @@
       </div>
       <div class="music-controls">
         <div class="btn btn-mode"></div>
-        <div class="btn btn-prev"></div>
-        <div class="btn btn-play"></div>
-        <div class="btn btn-next"></div>
+        <div class="btn btn-prev" @click="prevMusic"></div>
+        <div class="btn btn-play" @click="palyMusic"></div>
+        <div class="btn btn-next" @click="nextMusic"></div>
         <div class="btn btn-list"></div>
       </div>
     </div>
   </div>
 </template>
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 export default {
   name: 'detail',
   components: {},
-  data() {
+  data () {
     return {}
-  },
-  methods: {
-    goBack() {
-      this.$router.push('/')
-    }
   },
   computed: {
     ...mapState({
-      count: state => state.count
-    })
+      audioEle: state => state.audioEle,
+      playList: state => state.playList,
+      curIndex: state => state.curIndex
+    }),
+    curMusic () {
+      return this.playList[this.curIndex]
+    }
   },
-  mounted() {
-    console.log(this.count)
+  watch: {
+  },
+
+  methods: {
+    ...mapMutations({
+      setCurIndex: 'setCurIndex'
+    }),
+    goBack () {
+      this.$router.push('/')
+    },
+    // 播放音乐
+    palyMusic () {
+      this.audioEle.src = this.playList[this.curIndex].url
+      this.audioEle.play()
+      this.audioEle.onended = () => {
+        console.log('end')
+        if (this.curIndex + 1 === this.playlist.length) this.setCurIndex(0)
+        this.audioEle.src = this.playlist[this.curIndex + 1].url
+        this.audioEle.play()
+      }
+    },
+    prevMusic () {
+
+    },
+    nextMusic () {
+
+    }
+  },
+  mounted () {
+    this.palyMusic()
   }
 }
 </script>
@@ -134,7 +159,7 @@ export default {
           position: absolute;
           top: 50%;
           left: 50%;
-          width: 140px;
+          width: 160px;
           transform: translate(-50%, -50%);
         }
       }
@@ -178,7 +203,7 @@ export default {
             transform: translate(0, -50%);
             background-color: #fff;
             &:after {
-              content: '';
+              content: "";
               position: absolute;
               top: 50%;
               left: 50%;

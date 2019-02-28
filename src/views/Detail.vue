@@ -16,17 +16,13 @@
         </div>
       </div>
     </div>
+    {{audioEle.currentTime}}
     <div class="detail-player">
-      <div class="music-progress">
-        <span class="music-playing-time">00:00</span>
-        <div class="music-progress-bar">
-          <div class="music-progress-outer"></div>
-          <div class="music-progress-inner">
-            <div class="music-progress-dot"></div>
-          </div>
-        </div>
-        <span class="music-all-time">{{curMusic.musicTime}}</span>
-      </div>
+      <progress-bar
+        :currentTime="currentTime"
+        :percent="percentMusic"
+        @percentChange="changeProgress"
+      ></progress-bar>
       <div class="music-controls">
         <div class="btn btn-mode"></div>
         <div class="btn btn-prev" @click="prevMusic"></div>
@@ -39,11 +35,16 @@
 </template>
 <script>
 import { mapState, mapMutations } from 'vuex'
+import progressBar from '@/components/progressBar'
 export default {
   name: 'detail',
-  components: {},
+  components: {
+    progressBar
+  },
   data() {
-    return {}
+    return {
+      currentTime: 0 //当前播放时间
+    }
   },
   computed: {
     ...mapState({
@@ -54,6 +55,10 @@ export default {
     }),
     curMusic() {
       return this.playList[this.curIndex]
+    },
+    percentMusic() {
+      const duration = this.curMusic.duration
+      return this.currentTime && duration ? this.currentTime / duration : 0
     }
   },
   watch: {
@@ -73,12 +78,17 @@ export default {
     goBack() {
       this.$router.push('/')
     },
+    //修改音乐进度
+    changeProgress(percent) {
+      this.audioEle.currentTime = this.curMusic.duration * percent
+    },
     // 暂停/播放
     togglePlaying() {
       this.setPlaying(!this.playing)
     },
     // 播放音乐
     playMusic() {
+      this.currentTime = 0
       this.audioEle.src = this.playList[this.curIndex].url
       this.audioEle.play()
     },
@@ -95,12 +105,16 @@ export default {
         return
       }
       this.setCurIndex(this.curIndex + 1)
+    },
+    onMusicTimeupdate() {
+      this.currentTime = this.audioEle.currentTime
     }
   },
   mounted() {
     this.togglePlaying()
     this.playMusic()
     this.audioEle.onended = this.nextMusic
+    this.audioEle.ontimeupdate = this.onMusicTimeupdate
   }
 }
 </script>
@@ -182,60 +196,13 @@ export default {
     color: #fff;
     height: 100px;
     font-size: 12px;
-    .music-progress {
-      display: flex;
-      padding: 0 20px;
-      height: 20px;
-      align-items: center;
-      .music-progress-bar {
-        position: relative;
-        width: 100%;
-        line-height: 20px;
-        margin: 0 12px;
-        .music-progress-outer {
-          height: 2px;
-          width: 100%;
-          background-color: hsla(0, 0%, 100%, 0.15);
-        }
-        .music-progress-inner {
-          position: absolute;
-          top: 0;
-          left: 0;
-          display: inline-block;
-          width: 0;
-          height: 2px;
-          background: rgb(229, 71, 60);
-          width: 0px;
-          .music-progress-dot {
-            position: absolute;
-            top: 50%;
-            right: -9px;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            transform: translate(0, -50%);
-            background-color: #fff;
-            &:after {
-              content: '';
-              position: absolute;
-              top: 50%;
-              left: 50%;
-              width: 5px;
-              height: 5px;
-              border-radius: 50%;
-              background-color: rgb(229, 71, 60);
-              transform: translate(-50%, -50%);
-            }
-          }
-        }
-      }
-    }
     .music-controls {
       display: flex;
       justify-content: space-between;
+      margin-top: 8px;
       .btn {
-        width: 80px;
-        height: 80px;
+        width: 64px;
+        height: 64px;
         background-size: contain;
       }
       .btn-mode {

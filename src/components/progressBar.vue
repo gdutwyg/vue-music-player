@@ -88,12 +88,14 @@ export default {
     },
     //鼠标按下事件
     barDown(e) {
+      console.log('touchstart')
       this.move.status = true
       this.move.startX = e.clientX || e.touches[0].pageX
       this.move.left = this.$refs.progressBarInner.clientWidth
     },
     //鼠标/触摸移动事件
     barMove(e) {
+      console.log('move')
       if (!this.move.status) {
         return false
       }
@@ -108,6 +110,7 @@ export default {
     },
     //鼠标/触摸释放事件
     barUp(e) {
+      console.log('touchend')
       e.stopPropagation()
       this.move.status = false
     },
@@ -119,6 +122,17 @@ export default {
       let percent = this.$refs.progressBarInner.clientWidth / lineWidth
       this.$emit('percentChange', percent)
     }
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.bindEvents()
+      // const barWidth = this.$refs.progressBar.clientWidth - dotWidth
+      // const offsetWidth = this.percent * barWidth
+      // this.moveSilde(offsetWidth)
+    })
+  },
+  beforeDestroy() {
+    this.unbindEvents()
   }
 }
 </script>

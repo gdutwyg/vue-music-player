@@ -2,7 +2,7 @@
   <div class="music-box">
     <header class="music-header">
       <h1 class="music-header-title">简易音乐播放器</h1>
-      <div class="music-login-button">登录</div>
+      <!-- <div class="music-login-button">登录</div> -->
     </header>
     <div class="music-content">
       <div class="music-tab">

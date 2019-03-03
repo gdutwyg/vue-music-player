@@ -24,6 +24,8 @@ const music = {
         this.audioEle.src = this.playList[this.curIndex].url
         this.audioEle.play()
       } else {
+        // 音乐不可用
+        this.$toast(res.message)
         this.nextMusic()
       }
     },

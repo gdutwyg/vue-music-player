@@ -1,5 +1,15 @@
 import axios from 'axios'
-import Vue from 'vue'
+// 添加请求拦截器
+axios.interceptors.request.use(
+  function(config) {
+    config.baseURL = 'https://api.mtnhao.com'
+    config.url = config.url.replace('/api', '')
+    return config
+  },
+  function(error) {
+    return Promise.reject(error)
+  }
+)
 class Request {
   sendReq(url, params) {
     return axios
@@ -11,11 +21,6 @@ class Request {
         else return {}
       })
       .catch(error => {
-        // Vue.prototype.$message({
-        //   showClose: true,
-        //   message: `请求失败, 请查看报错信息${error}`,
-        //   type: 'error'
-        // })
         return error.response.data
       })
   }

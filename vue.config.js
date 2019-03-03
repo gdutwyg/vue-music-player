@@ -3,7 +3,7 @@ module.exports = {
     proxy: {
       // 代理
       '/api': {
-        target: ' http://localhost:3000',
+        target: 'http://api.mtnhao.com',
         changeOrigin: true,
         ws: true,
         pathRewrite: {

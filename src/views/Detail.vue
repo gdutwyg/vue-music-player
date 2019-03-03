@@ -44,7 +44,7 @@ export default {
   mixins: [music],
   data() {
     return {
-      currentTime: 0 //当前播放时间
+      currentTime: 0 // 当前播放时间
     }
   },
   computed: {
@@ -71,7 +71,7 @@ export default {
     goBack() {
       this.$router.push('/')
     },
-    //修改音乐进度
+    // 修改音乐进度
     changeProgress(percent) {
       this.audioEle.currentTime = this.curMusic.duration * percent
     },

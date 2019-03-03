@@ -16,7 +16,6 @@
         </div>
       </div>
     </div>
-    {{audioEle.currentTime}}
     <div class="detail-player">
       <progress-bar
         :currentTime="currentTime"
@@ -36,11 +35,13 @@
 <script>
 import { mapState, mapMutations } from 'vuex'
 import progressBar from '@/components/progressBar'
+import music from '@/mixins/music'
 export default {
   name: 'detail',
   components: {
     progressBar
   },
+  mixins: [music],
   data() {
     return {
       currentTime: 0 //当前播放时间
@@ -61,14 +62,6 @@ export default {
       return this.currentTime && duration ? this.currentTime / duration : 0
     }
   },
-  watch: {
-    curIndex() {
-      this.playMusic()
-    },
-    playing(newVal) {
-      newVal ? this.audioEle.play() : this.audioEle.pause()
-    }
-  },
 
   methods: {
     ...mapMutations({
@@ -82,16 +75,6 @@ export default {
     changeProgress(percent) {
       this.audioEle.currentTime = this.curMusic.duration * percent
     },
-    // 暂停/播放
-    togglePlaying() {
-      this.setPlaying(!this.playing)
-    },
-    // 播放音乐
-    playMusic() {
-      this.currentTime = 0
-      this.audioEle.src = this.playList[this.curIndex].url
-      this.audioEle.play()
-    },
     prevMusic() {
       if (this.curIndex === 0) {
         this.setCurIndex(this.playList.length - 1)
@@ -99,21 +82,11 @@ export default {
       }
       this.setCurIndex(this.curIndex - 1)
     },
-    nextMusic() {
-      if (this.curIndex === this.playList.length - 1) {
-        this.setCurIndex(0)
-        return
-      }
-      this.setCurIndex(this.curIndex + 1)
-    },
     onMusicTimeupdate() {
       this.currentTime = this.audioEle.currentTime
     }
   },
   mounted() {
-    this.togglePlaying()
-    this.playMusic()
-    this.audioEle.onended = this.nextMusic
     this.audioEle.ontimeupdate = this.onMusicTimeupdate
   }
 }

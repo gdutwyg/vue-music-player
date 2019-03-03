@@ -20,10 +20,10 @@
         </div>
         <ul class="music-list-content">
           <li
-            class="music-list-item"
             v-for="(item, i) in playList"
+            :class="{'music-list-item': true, 'isHasPlayMini': curMusic, 'isPlaying': playing && curIndex === i}"
             :key="i"
-            @click="turnDetail(item, i)"
+            @click="goPlay(item, i)"
           >
             <span class="music-item-num">{{i + 1}}</span>
             <span class="music-item-name">{{item.name}}</span>
@@ -33,22 +33,33 @@
       </div>
       <div v-else class="warning">敬请期待。。。</div>
     </div>
-    <!-- <div class="music-footer"></div> -->
+    <div class="music-footer" v-if="curMusic" @click="turnDetail">
+      <div class="music-img">
+        <img :src="curMusic.picUrl" alt>
+      </div>
+      <div class="music-info">
+        <h2>{{curMusic.name}}</h2>
+        <p>{{curMusic.singer}}</p>
+      </div>
+      <div :class="{'btn-play': true, 'pause': !playing}" @click.stop="togglePlaying"></div>
+    </div>
     <div class="music-bg"></div>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-// import HelloWorld from '@/components/HelloWorld.vue'
 import { mapState, mapMutations } from 'vuex'
 import request from '@/request'
 import utils from '@/utils'
+import music from '@/mixins/music'
 export default {
   name: 'index',
   components: {},
-  data () {
+  mixins: [music],
+  data() {
     return {
+      // 热歌榜
       currentTab: 'hot',
       tabList: [
         {
@@ -65,26 +76,37 @@ export default {
   },
   computed: {
     ...mapState({
-      audioEle: state => state.audioEle
-    })
+      audioEle: state => state.audioEle,
+      curIndex: state => state.curIndex,
+      playing: state => state.playing
+    }),
+    curMusic() {
+      return this.playList[this.curIndex]
+    }
   },
   methods: {
     ...mapMutations({
       setPlayList: 'setPlayList',
-      setCurIndex: 'setCurIndex'
+      setCurIndex: 'setCurIndex',
+      setPlaying: 'setPlaying'
     }),
-    toggleTab (tab) {
+    toggleTab(tab) {
       this.currentTab = tab
     },
-    turnDetail (item, i) {
+    // 点击mini播放器进入到详情
+    turnDetail() {
+      this.$router.push({
+        name: 'detail'
+      })
+    },
+    // 进入详情播放音乐
+    goPlay(item, i) {
       // 点击歌曲 设置当前音乐下标
       this.setCurIndex(i)
-      this.$router.push('detail')
     }
   },
-  mounted () {
-  },
-  async created () {
+  mounted() {},
+  async created() {
     const data = await request.sendReq('/api/top/List', {
       idx: 1
     })
@@ -94,10 +116,11 @@ export default {
 }
 </script>
 <style lang="less">
-@import "~@/assets/less/mixin.less";
+@import '~@/assets/less/mixin.less';
 .music-box {
   width: 100%;
   height: 100%;
+  position: relative;
 }
 .music-header {
   display: flex;
@@ -122,7 +145,6 @@ export default {
   width: 100%;
   height: calc(100% - 60px);
   color: rgba(0, 0, 0, 0.6);
-  background: rgb(#ccc, 0.6);
   .music-tab {
     display: flex;
     height: 40px;
@@ -146,7 +168,7 @@ export default {
   .music-list {
     position: relative;
     width: 100%;
-    height: 100%;
+    height: calc(100% - 40px);
     padding: 0 12px;
     box-sizing: border-box;
     .music-list-header {
@@ -180,9 +202,12 @@ export default {
         .music-item-num {
           width: 30px;
           margin-left: 10px;
+          text-align: center;
         }
         .music-item-name {
           flex: 1;
+          .nowrap();
+          padding-right: 10px;
         }
         .music-item-play-icon {
           width: 50px;
@@ -195,6 +220,15 @@ export default {
           .nowrap();
         }
       }
+      .music-list-item.isHasPlayMini:last-child {
+        margin-bottom: 55px;
+      }
+      .music-list-item.isPlaying {
+        .music-item-num {
+          font-size: 0;
+          background: url(~@/assets/imgs/player/wave.gif) no-repeat 50%;
+        }
+      }
     }
   }
   .warning {
@@ -202,6 +236,55 @@ export default {
     position: relative;
     top: 30%;
     text-align: center;
+  }
+}
+.music-footer {
+  display: flex;
+  position: fixed;
+  align-items: center;
+  bottom: 0;
+  width: 100%;
+  height: 54px;
+  background: rgba(#c0c0c0);
+  padding: 8px 12px;
+  box-sizing: border-box;
+  .music-img {
+    width: 38px;
+    height: 38px;
+    margin-right: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  .music-info {
+    flex: 1;
+    color: #333;
+    h2 {
+      font-size: 14px;
+      height: 20px;
+      line-height: 20px;
+    }
+    p {
+      color: #888;
+      font-size: 12px;
+      height: 18px;
+      line-height: 18px;
+    }
+  }
+  .btn-play {
+    width: 28px;
+    height: 28px;
+    margin-right: 30px;
+    background-image: url(~@/assets/imgs/player/min-play.png);
+    background-size: contain;
+    background-position: 50%;
+    background-repeat: no-repeat;
+    &.pause {
+      background-image: url(~@/assets/imgs/player/min-pause.png);
+    }
   }
 }
 .music-bg {
@@ -216,7 +299,7 @@ export default {
   background-size: cover;
   background-position: 50%;
   filter: blur(4px);
-  opacity: 0.8;
+  opacity: 0.3;
   transform: translateZ(0);
   transition: all 0.8s;
 }

@@ -1,5 +1,5 @@
 module.exports = {
-  outputDir: 'docs',
+  publicPath: '/vue-music-player/',
   devServer: {
     proxy: {
       // 代理

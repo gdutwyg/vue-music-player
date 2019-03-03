@@ -1,4 +1,5 @@
 module.exports = {
+  outputDir: 'docs',
   devServer: {
     proxy: {
       // 代理

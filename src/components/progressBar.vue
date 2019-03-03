@@ -11,7 +11,7 @@
   </div>
 </template>
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState } from 'vuex'
 import utils from '@/utils/'
 const dotWidth = 10
 export default {
@@ -60,7 +60,7 @@ export default {
     }
   },
   methods: {
-    //添加绑定事件
+    // 添加绑定事件
     bindEvents() {
       document.addEventListener('mousemove', this.barMove)
       document.addEventListener('mouseup', this.barUp)
@@ -68,7 +68,7 @@ export default {
       document.addEventListener('touchmove', this.barMove)
       document.addEventListener('touchend', this.barUp)
     },
-    //移除绑定事件
+    // 移除绑定事件
     unbindEvents() {
       document.removeEventListener('mousemove', this.barMove)
       document.removeEventListener('mouseup', this.barUp)
@@ -76,7 +76,7 @@ export default {
       document.removeEventListener('touchmove', this.barMove)
       document.removeEventListener('touchend', this.barUp)
     },
-    //点击事件
+    // 点击事件
     barClick(e) {
       let rect = this.$refs.progressBar.getBoundingClientRect()
       let offsetWidth = Math.min(
@@ -86,14 +86,14 @@ export default {
       this.moveSilde(offsetWidth)
       this.commitPercent()
     },
-    //鼠标按下事件
+    // 鼠标按下事件
     barDown(e) {
       console.log('touchstart')
       this.move.status = true
       this.move.startX = e.clientX || e.touches[0].pageX
       this.move.left = this.$refs.progressBarInner.clientWidth
     },
-    //鼠标/触摸移动事件
+    // 鼠标/触摸移动事件
     barMove(e) {
       console.log('move')
       if (!this.move.status) {
@@ -108,7 +108,7 @@ export default {
       this.moveSilde(offsetWidth)
       this.commitPercent()
     },
-    //鼠标/触摸释放事件
+    // 鼠标/触摸释放事件
     barUp(e) {
       console.log('touchend')
       e.stopPropagation()

@@ -1,3 +1,4 @@
+import request from '@/request'
 const music = {
   watch: {
     curIndex() {
@@ -13,11 +14,18 @@ const music = {
       }
     },
     // 播放音乐
-    playMusic() {
-      this.setPlaying(true)
-      this.currentTime = 0
-      this.audioEle.src = this.playList[this.curIndex].url
-      this.audioEle.play()
+    async playMusic() {
+      const res = await request.sendReq('/api/check/music', {
+        id: this.playList[this.curIndex].id
+      })
+      if (res.success) {
+        this.setPlaying(true)
+        this.currentTime = 0
+        this.audioEle.src = this.playList[this.curIndex].url
+        this.audioEle.play()
+      } else {
+        this.nextMusic()
+      }
     },
     nextMusic() {
       if (this.curIndex === this.playList.length - 1) {

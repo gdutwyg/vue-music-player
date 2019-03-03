@@ -13,12 +13,12 @@
           :class="{'active-tab': currentTab === item.value}"
         >{{item.name}}</div>
       </div>
-      <div class="music-list" v-if="currentTab === 'hot'">
+      <div class="music-list" v-show="currentTab === 'hot'">
         <div class="music-list-header">
           <span class="music-header-name">歌名</span>
           <span class="music-header-author">歌手</span>
         </div>
-        <ul class="music-list-content">
+        <ul class="music-list-content" ref="musicList">
           <li
             v-for="(item, i) in playList"
             :class="{'music-list-item': true, 'isHasPlayMini': curMusic, 'isPlaying': playing && curIndex === i}"
@@ -31,7 +31,7 @@
           </li>
         </ul>
       </div>
-      <div v-else class="warning">敬请期待。。。</div>
+      <div v-show="currentTab === 'recommend'" class="warning">敬请期待。。。</div>
     </div>
     <div class="music-footer" v-if="curMusic" @click="turnDetail">
       <div class="music-img">
@@ -78,7 +78,8 @@ export default {
     ...mapState({
       audioEle: state => state.audioEle,
       curIndex: state => state.curIndex,
-      playing: state => state.playing
+      playing: state => state.playing,
+      curPos: state => state.curPos
     }),
     curMusic() {
       return this.playList[this.curIndex]
@@ -88,13 +89,15 @@ export default {
     ...mapMutations({
       setPlayList: 'setPlayList',
       setCurIndex: 'setCurIndex',
-      setPlaying: 'setPlaying'
+      setPlaying: 'setPlaying',
+      savePos: 'savePos'
     }),
     toggleTab(tab) {
       this.currentTab = tab
     },
     // 点击mini播放器进入到详情
     turnDetail() {
+      this.savePos(this.$refs.musicList.scrollTop)
       this.$router.push({
         name: 'detail'
       })
@@ -105,13 +108,15 @@ export default {
       this.setCurIndex(i)
     }
   },
-  mounted() {},
   async created() {
     const data = await request.sendReq('/api/top/List', {
       idx: 1
     })
     this.playList = utils.formatPlayList(data.playlist.tracks)
     this.setPlayList(this.playList)
+    this.$nextTick(() => {
+      this.$refs.musicList.scrollTop = this.curPos
+    })
   }
 }
 </script>

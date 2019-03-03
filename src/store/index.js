@@ -8,7 +8,8 @@ export default new Vuex.Store({
     audioEle: null,
     playList: [],
     curIndex: -1,
-    playing: false
+    playing: false,
+    curPos: 0
   },
   getters,
   mutations: {
@@ -23,6 +24,9 @@ export default new Vuex.Store({
     },
     setPlaying(state, playing) {
       state.playing = playing
+    },
+    savePos(state, pos) {
+      state.curPos = pos
     }
   },
   actions: {

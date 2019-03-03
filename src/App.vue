@@ -1,8 +1,6 @@
 <template>
   <div id="app">
-    <keep-alive>
-      <router-view/>
-    </keep-alive>
+    <router-view/>
     <!--播放器-->
     <audio ref="player"></audio>
   </div>

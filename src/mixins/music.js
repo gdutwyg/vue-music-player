@@ -9,7 +9,6 @@ const music = {
     keyEvent (e) {
       // space 键
       if (e.keyCode === 32) {
-        console.log(this.togglePlaying)
         this.togglePlaying()
       }
     },
@@ -30,7 +29,6 @@ const music = {
       }
     },
     nextMusic () {
-      console.log(this.curIndex)
       if (this.curIndex === this.playList.length - 1) {
         this.setCurIndex(0)
         return

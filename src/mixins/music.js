@@ -1,19 +1,20 @@
 import request from '@/request'
 const music = {
   watch: {
-    curIndex () {
+    curIndex() {
       this.playMusic()
     }
   },
   methods: {
-    keyEvent (e) {
+    keyEvent(e) {
       // space 键
       if (e.keyCode === 32) {
+        e.preventDefault()
         this.togglePlaying()
       }
     },
     // 播放音乐
-    async playMusic () {
+    async playMusic() {
       const res = await request.sendReq('/api/check/music', {
         id: this.playList[this.curIndex].id
       })
@@ -28,7 +29,8 @@ const music = {
         this.nextMusic()
       }
     },
-    nextMusic () {
+    nextMusic() {
+      console.log('next', this)
       if (this.curIndex === this.playList.length - 1) {
         this.setCurIndex(0)
         return
@@ -36,17 +38,17 @@ const music = {
       this.setCurIndex(this.curIndex + 1)
     },
     // 暂停/播放
-    togglePlaying () {
+    togglePlaying() {
       !this.playing ? this.audioEle.play() : this.audioEle.pause()
       this.setPlaying(!this.playing)
     }
   },
-  mounted () {
+  mounted() {
     document.onkeydown = this.keyEvent
     // 如果此时没有playList 则跳转到列表页面 防止detail f5刷新的问题
     if (!this.playList.length) this.$router.push('/')
     this.$nextTick(() => {
-      if (this.audioEle && !this.audioEle.onended) this.audioEle.onended = this.nextMusic
+      if (this.audioEle) this.audioEle.onended = this.nextMusic
     })
   }
 }

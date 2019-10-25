@@ -1,6 +1,7 @@
 # vue-music-player
 
-一款很简易的音乐播放器   
+一款很简易的音乐播放器
+
 [demo地址](https://gdutwyg.github.io/vue-music-player)
 
 

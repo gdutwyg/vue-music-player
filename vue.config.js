@@ -4,6 +4,13 @@ module.exports = {
   configureWebpack: {
     devtool: false // 开发环境禁用
   },
+  chainWebpack: config => {
+    config.module
+      .rule('images')
+      .use('url-loader')
+      .loader('url-loader')
+      .tap(options => Object.assign(options, { limit: 100240 }))
+  },
   devServer: {
     proxy: {
       // 代理

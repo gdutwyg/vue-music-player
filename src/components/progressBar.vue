@@ -28,7 +28,7 @@ export default {
       required: true
     }
   },
-  data() {
+  data () {
     return {
       move: {
         status: false, // 是否可拖动
@@ -43,15 +43,15 @@ export default {
       playList: state => state.playList,
       curIndex: state => state.curIndex
     }),
-    curMusic() {
+    curMusic () {
       return this.playList[this.curIndex]
     },
-    formatCurTime() {
+    formatCurTime () {
       return utils.formatMusicTime(this.currentTime)
     }
   },
   watch: {
-    percent(newPercent) {
+    percent (newPercent) {
       if (newPercent >= 0 && !this.move.status) {
         const barWidth = this.$refs.progressBar.clientWidth - dotWidth
         const offsetWidth = newPercent * barWidth
@@ -61,7 +61,7 @@ export default {
   },
   methods: {
     // 添加绑定事件
-    bindEvents() {
+    bindEvents () {
       document.addEventListener('mousemove', this.barMove)
       document.addEventListener('mouseup', this.barUp)
 
@@ -69,7 +69,7 @@ export default {
       document.addEventListener('touchend', this.barUp)
     },
     // 移除绑定事件
-    unbindEvents() {
+    unbindEvents () {
       document.removeEventListener('mousemove', this.barMove)
       document.removeEventListener('mouseup', this.barUp)
 
@@ -77,7 +77,7 @@ export default {
       document.removeEventListener('touchend', this.barUp)
     },
     // 点击事件
-    barClick(e) {
+    barClick (e) {
       let rect = this.$refs.progressBar.getBoundingClientRect()
       let offsetWidth = Math.min(
         this.$refs.progressBar.clientWidth - dotWidth,
@@ -87,15 +87,13 @@ export default {
       this.commitPercent()
     },
     // 鼠标按下事件
-    barDown(e) {
-      console.log('touchstart')
+    barDown (e) {
       this.move.status = true
       this.move.startX = e.clientX || e.touches[0].pageX
       this.move.left = this.$refs.progressBarInner.clientWidth
     },
     // 鼠标/触摸移动事件
-    barMove(e) {
-      console.log('move')
+    barMove (e) {
       if (!this.move.status) {
         return false
       }
@@ -109,21 +107,20 @@ export default {
       this.commitPercent()
     },
     // 鼠标/触摸释放事件
-    barUp(e) {
-      console.log('touchend')
+    barUp (e) {
       e.stopPropagation()
       this.move.status = false
     },
-    moveSilde(offsetWidth) {
+    moveSilde (offsetWidth) {
       this.$refs.progressBarInner.style.width = `${offsetWidth}px`
     },
-    commitPercent() {
+    commitPercent () {
       let lineWidth = this.$refs.progressBar.clientWidth - dotWidth
       let percent = this.$refs.progressBarInner.clientWidth / lineWidth
       this.$emit('percentChange', percent)
     }
   },
-  mounted() {
+  mounted () {
     this.$nextTick(() => {
       this.bindEvents()
       // const barWidth = this.$refs.progressBar.clientWidth - dotWidth
@@ -131,7 +128,7 @@ export default {
       // this.moveSilde(offsetWidth)
     })
   },
-  beforeDestroy() {
+  beforeDestroy () {
     this.unbindEvents()
   }
 }
@@ -173,7 +170,7 @@ export default {
         transform: translate(0, -50%);
         background-color: #fff;
         &:after {
-          content: '';
+          content: "";
           position: absolute;
           top: 50%;
           left: 50%;
